@@ -82,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<Customer> findAllCustomers() {
-		Query  q = em.createQuery(" SELECT a from Customer a GROUP BY a.firstName");
+		Query  q = em.createQuery(" SELECT a from Customer a GROUP BY a.firstName,a.id");
 		List<Customer> familyy = q.getResultList();
 	    return	familyy;
 	}
