@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import com.familytree.familytree.entities.Customer;
 import com.familytree.familytree.services.CustomerService;
 
-@CrossOrigin("*")
+
 @RestController
 public class MyController {
 	
