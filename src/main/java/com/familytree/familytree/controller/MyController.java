@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.familytree.familytree.entities.Dates;
+import com.familytree.familytree.entities.Person;
 import com.familytree.familytree.entities.Totals;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import com.familytree.familytree.services.CustomerService;
 @CrossOrigin("*")
 @RestController
 public class MyController {
-	
+
 	private final CustomerService familyService;
 
 	public MyController(CustomerService familyService) {
@@ -27,11 +28,11 @@ public class MyController {
 	@GetMapping("/customer/{firstName}")
 	public ResponseEntity<Customer> getFamilyDetails(@PathVariable String firstName) {
 		try {
-		Customer family =  this.familyService.getFamilyDetails(firstName);
-		if(family != null) {
-			return new ResponseEntity <Customer>(family,HttpStatus.OK);
+			Customer family =  this.familyService.getFamilyDetails(firstName);
+			if(family != null) {
+				return new ResponseEntity <Customer>(family,HttpStatus.OK);
 			}else {
-			 return new ResponseEntity<Customer>(family,HttpStatus.NOT_FOUND);
+				return new ResponseEntity<Customer>(family,HttpStatus.NOT_FOUND);
 			}
 		}
 		catch(Exception e){
@@ -56,7 +57,7 @@ public class MyController {
 
 
 	@GetMapping("/customer")
-	public Collection<Customer>  findAllCustomers(){
+	public Collection<Person>  findAllCustomers(){
 		return this.familyService.findAllCustomers();
 	}
 
@@ -64,9 +65,9 @@ public class MyController {
 	public Collection<Customer> findAllCustomersFromTodayDate(){
 		return this.familyService.findAllCustomersFromTodayDate();
 	}
-	
+
 	@PostMapping("/customer")
-	public ResponseEntity<String> addCustomer(@RequestBody Customer family) {
+	public ResponseEntity<String> addCustomer(@RequestBody Person family) {
 		try {
 			String customer = this.familyService.addCustomer(family);
 			return new ResponseEntity<String>(customer, HttpStatus.OK);
@@ -74,21 +75,21 @@ public class MyController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PutMapping("/customer")
 	public Customer UpdateFamily(@RequestBody Customer family) {
 		return this.familyService.addEntry(family);
 	}
-	
+
 	@DeleteMapping("/customer/{id}")
 	public ResponseEntity<HttpStatus>deleteFamily(@PathVariable String id) {
-		   try{
-			   this.familyService.deleteCustomer(id);
-			   return new ResponseEntity<>(HttpStatus.OK);
-		   }
-		   catch(Exception e) {
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		   }		
+		try{
+			this.familyService.deleteCustomer(id);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@GetMapping("/customer/endingBalance")

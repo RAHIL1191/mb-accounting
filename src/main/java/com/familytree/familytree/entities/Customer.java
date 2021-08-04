@@ -16,7 +16,6 @@ public class Customer {
 	private Long id;
 
 	private String firstName;
-	private String lastName;
 	private LocalDate transactionEffectiveDate;
 	private int totalAmountPending;
 	private String description;
@@ -24,6 +23,20 @@ public class Customer {
 	private int debitAmountReceived;
 	private String receiptLink;
 	private String paymentLink;
+
+
+	public Person getPerson() {
+		return person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "person_id")
+	private Person person;
+
 
 
 	public Long getId() {
@@ -40,13 +53,9 @@ public class Customer {
 		this.firstName = firstName;
 	}
 
-	public String getLastName() {
-		return lastName;
-	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+
+
 
 	public LocalDate getTransactionEffectiveDate() {
 		return transactionEffectiveDate;
@@ -55,7 +64,7 @@ public class Customer {
 	public void setTransactionEffectiveDate(LocalDate transactionEffectiveDate) {
 		this.transactionEffectiveDate = transactionEffectiveDate;
 	}
-	
+
 	public int getCreditAmountReceived() {
 		return creditAmountReceived;
 	}
@@ -63,7 +72,7 @@ public class Customer {
 	public void setCreditAmountReceived(int creditAmountReceived) {
 		this.creditAmountReceived = creditAmountReceived;
 	}
-	
+
 	public int getTotalAmountPending() {
 		return totalAmountPending;
 	}
@@ -124,16 +133,16 @@ public class Customer {
 
 	private LocalDate toDate;
 
-	public Customer(Long id, String firstName, String lastName, LocalDate transactionEffectiveDate, int totalAmountPending, int creditAmountReceived, int debitAmountReceived, int endingBalance, String description) {
+	public Customer(Long id, String firstName,  LocalDate transactionEffectiveDate, int totalAmountPending, int creditAmountReceived, int debitAmountReceived, int endingBalance, String description,Person person) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
-		this.lastName = lastName;
 		this.transactionEffectiveDate = transactionEffectiveDate;
 		this.totalAmountPending = totalAmountPending;
 		this.debitAmountReceived = debitAmountReceived;
 		this.creditAmountReceived = creditAmountReceived;
 		this.description = description;
+		this.person = person;
 
 	}
 
