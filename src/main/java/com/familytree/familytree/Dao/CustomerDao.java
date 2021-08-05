@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CustomerDao extends JpaRepository<Customer,Long> {
 
-	List<Customer> findByFirstNameAndLastName(String firstName, String lastName);
+//	List<Customer> findByFirstNameAndLastName(String firstName, String lastName);
 }
