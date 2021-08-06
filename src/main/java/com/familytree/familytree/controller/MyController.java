@@ -3,6 +3,7 @@ package com.familytree.familytree.controller;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import com.familytree.familytree.entities.Dates;
 import com.familytree.familytree.entities.Person;
@@ -40,6 +41,22 @@ public class MyController {
 		}
 	}
 
+	@GetMapping("/customer/person/{id}")
+	public ResponseEntity<Person> getPersonDetails(@PathVariable String id) {
+		try {
+			Person person =  this.familyService.getCustomerName(id);
+			if(person != null) {
+				return new ResponseEntity<>(person, HttpStatus.OK);
+			}else {
+				return new ResponseEntity<>((Person) null, HttpStatus.NOT_FOUND);
+			}
+		}
+		catch(Exception e){
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 	@GetMapping("/customer/details/{firstName}")
 	public ResponseEntity<List<Customer>> getCustomerDetails(@PathVariable String firstName) {
 		try {
@@ -61,11 +78,6 @@ public class MyController {
 		return this.familyService.findAllCustomers();
 	}
 
-	@GetMapping("/customer/balance")
-	public Collection<Customer> findAllCustomersFromTodayDate(){
-		return this.familyService.findAllCustomersFromTodayDate();
-	}
-
 	@PostMapping("/customer")
 	public ResponseEntity<String> addCustomer(@RequestBody Person family) {
 		try {
@@ -76,11 +88,13 @@ public class MyController {
 		}
 	}
 
+	// for adding entry from cash receipt or cash payment page
 	@PutMapping("/customer")
 	public Customer UpdateFamily(@RequestBody Customer family) {
 		return this.familyService.addEntry(family);
 	}
 
+	//for deleting  customer name
 	@DeleteMapping("/customer/{id}")
 	public ResponseEntity<HttpStatus>deleteFamily(@PathVariable String id) {
 		try{
@@ -92,19 +106,52 @@ public class MyController {
 		}
 	}
 
+	// find all customers from today's date on cashbook page
+	@GetMapping("/customer/balance")
+	public Collection<Customer> findAllCustomersFromTodayDate(){
+		return this.familyService.findAllCustomersFromTodayDate();
+	}
+
+	//get ending balance for cashbook page for today's date
 	@GetMapping("/customer/endingBalance")
 	public Totals findTotalsFromTodayDate(){
 		return this.familyService.findTotalsFromTodayDate();
 	}
 
+	//get ending balance for cashbook page for today's date
+	@PutMapping("customer/getListFromDate")
+	public Totals findTotalsFromDate(@RequestBody Customer family){
+		return this.familyService.findTotalsFromDate(family);
+	}
+
+	//for getting list of customer when search through particular date on cashbook page
+	@PutMapping("/customer/datewiseDetails")
+	public List<Customer> getDetailsFromDate(@RequestBody Customer family){
+		return this.familyService.getDetailsFromDate(family);
+	}
+
+	//for updating customer name
+	@PutMapping("customer/updateCustomer/{id}")
+	public ResponseEntity<String> updateCustomer(@PathVariable String id,@RequestBody Person person){
+		try{
+			String customer = this.familyService.updateCustomer(id,person);
+			return new ResponseEntity<String>(customer, HttpStatus.OK);
+		}catch(Exception e){
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	//for getting ending balance for ledger page
 	@PutMapping("/customer/endingDateWiseBalance")
 	public Totals findTotalsFromSelectedDate(@RequestBody Customer family){
 		return this.familyService.findTotalsFromSelectedDate(family);
 	}
 
+	// for getting list of entries for ledger page
 	@PutMapping("/customer/datewise")
 	public List<Customer> getDetailsFRomToDate(@RequestBody Customer family){
-		return this.familyService.getdateWiseDetails(family);
+		return this.familyService.getDateWiseDetails(family);
 	}
+
 
 }

@@ -1,8 +1,6 @@
 package com.familytree.familytree.services;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +10,6 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import com.familytree.familytree.Dao.PersonDao;
-import com.familytree.familytree.entities.Dates;
 import com.familytree.familytree.entities.Person;
 import com.familytree.familytree.entities.Totals;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +34,10 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	public  Customer getFamilyDetails(String firstName){
-		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.firstName = :fname ORDER BY a.firstName,a.id desc", Customer.class);
-		q.setParameter("fname", firstName);
-		List<Customer> customers = q.getResultList();
+		Long id = getIdFromName(firstName);
+		TypedQuery<Customer> c = em.createQuery("SELECT a FROM Customer a where a.person.id = :person  ORDER BY a.firstName,a.id desc", Customer.class);
+		c.setParameter("person", id);
+		List<Customer> customers = c.getResultList();
 		if(CollectionUtils.isEmpty(customers)){
 			Customer customer =new Customer();
 			customer.setFirstName(firstName);
@@ -48,17 +46,22 @@ public class CustomerServiceImpl implements CustomerService {
 			customer.setDebitAmountReceived(0);
 			return customer;
 		}
-		Customer c = customers.get(0);
-		c.setTransactionEffectiveDate(LocalDate.now());
-		c.setCreditAmountReceived(0);
-		c.setDebitAmountReceived(0);
-		c.setId(null);
-		return c;
+		Customer customer = customers.get(0);
+		customer.setFirstName(firstName);
+		customer.setTransactionEffectiveDate(LocalDate.now());
+		customer.setCreditAmountReceived(0);
+		customer.setDebitAmountReceived(0);
+		customer.setId(null);
+		return customer;
+	}
+
+	public Person getCustomerName(String id){
+		return personDao.findById(Long.valueOf(id)).orElse(null);
 	}
 
 	public List<Customer> getCustomerDetails(String firstName){
-		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.firstName = :fname  ORDER BY a.firstName,a.id desc", Customer.class);
-		q.setParameter("fname", firstName);
+		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.firstName = :name  ORDER BY a.firstName,a.id desc", Customer.class);
+		q.setParameter("name", firstName);
 		return q.getResultList();
 	}
 
@@ -66,18 +69,24 @@ public class CustomerServiceImpl implements CustomerService {
 	public String addCustomer(Person family) {
 		List<Person> customers = personDao.findAll();
 		if(CollectionUtils.isEmpty(customers)) {
-//			family.getCustomer().get(0).setFirstName(family.getName());
 			personDao.save(family);
 			return "Customer Successfully Added";
 		}
 		Person j = customers.stream().filter(r -> r.getName().equals(family.getName())).findFirst().orElse(null);
 		if(j == null) {
-//			family.getCustomer().get(0).setFirstName(family.getName());
 			personDao.save(family);
 			return "Customer Successfully Added";
 		}else{
 			return "Customer Already Exists";
 		}}
+
+	@Override
+	public String updateCustomer(String id,Person person) {
+		Person per = personDao.findById(Long.valueOf(id)).orElse(null);
+		per.setName(person.getName());
+		personDao.save(per);
+		return "Customer has been updated successfully";
+	}
 
 	private Person getPerson(String name){
 		TypedQuery<Person> q = em.createQuery("SELECT a FROM Person a WHERE a.name = :fname ", Person.class);
@@ -88,7 +97,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer addEntry(Customer family) {
 		family.setTotalAmountPending(family.getTotalAmountPending());
-		family.setPerson(getPerson(family.getFirstName()));
+		family.setPerson(getPerson(family.getPerson().getName()));
 		familyDao.save(family);
 		return family;
 	}
@@ -100,9 +109,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<Person> findAllCustomers() {
-//		Query  q = em.createQuery(" SELECT a from Customer a GROUP BY a.firstName");
-//		List<Customer> familyy = q.getResultList();
-//	    return	familyy;
 		return personDao.findAll();
 	}
 
@@ -132,22 +138,45 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Totals findTotalsFromSelectedDate(Customer family) {
-		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.transactionEffectiveDate >= :fro  AND a.transactionEffectiveDate<= :to AND a.firstName= :fname", Customer.class);
+		Long id = getIdFromName(family.getFirstName());
+		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.transactionEffectiveDate >= :fro  AND a.transactionEffectiveDate<= :to AND a.person.id= :id", Customer.class);
 		q.setParameter("fro", family.getFromDate());
 		q.setParameter("to", family.getToDate());
-		q.setParameter("fname", family.getFirstName());
-		List<Customer> cust = q.getResultList();
-		return getTotals(cust);
+		q.setParameter("id",id);
+		List<Customer> customers = q.getResultList();
+		return getTotals(customers);
 	}
 
 	@Override
-	public List<Customer> getdateWiseDetails(Customer family) {
-		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.transactionEffectiveDate >= :fro  AND a.transactionEffectiveDate<= :to AND a.firstName= :fname", Customer.class);
+	public List<Customer> getDateWiseDetails(Customer family) {
+		Long id = getIdFromName(family.getFirstName());
+		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.transactionEffectiveDate >= :fro  AND a.transactionEffectiveDate<= :to AND a.person.id= :id", Customer.class);
 		q.setParameter("fro", family.getFromDate());
 		q.setParameter("to", family.getToDate());
-		q.setParameter("fname", family.getFirstName());
-		List<Customer> cust = q.getResultList();
-		return cust;
+		q.setParameter("id",id);
+		return q.getResultList();
+	}
+
+	@Override
+	public Totals findTotalsFromDate(Customer family) {
+		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.transactionEffectiveDate = :fro", Customer.class);
+		q.setParameter("fro", family.getFromDate());
+		List<Customer> customers = q.getResultList();
+		return getTotals(customers);
+	}
+
+	@Override
+	public List<Customer> getDetailsFromDate(Customer family) {
+		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.transactionEffectiveDate = :fro", Customer.class);
+		q.setParameter("fro", family.getFromDate());
+		return q.getResultList();
+	}
+
+	public Long getIdFromName(String name){
+		TypedQuery<Person> q = em.createQuery("SELECT a FROM Person a where a.name = :name", Person.class);
+		q.setParameter("name", name);
+		Person personId = q.getSingleResult();
+		return personId.getId();
 	}
 
 }
