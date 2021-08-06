@@ -35,7 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	public  Customer getFamilyDetails(String firstName){
 		Long id = getIdFromName(firstName);
-		TypedQuery<Customer> c = em.createQuery("SELECT a FROM Customer a where a.person.id = :person  ORDER BY a.firstName,a.id desc", Customer.class);
+		TypedQuery<Customer> c = em.createQuery("SELECT a FROM Customer a where a.person.id = :person  ORDER BY a.id desc", Customer.class);
 		c.setParameter("person", id);
 		List<Customer> customers = c.getResultList();
 		if(CollectionUtils.isEmpty(customers)){
@@ -60,8 +60,9 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	public List<Customer> getCustomerDetails(String firstName){
-		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.firstName = :name  ORDER BY a.firstName,a.id desc", Customer.class);
-		q.setParameter("name", firstName);
+		Long id = getIdFromName(firstName);
+		TypedQuery<Customer> q = em.createQuery("SELECT a FROM Customer a WHERE a.person.id = :id  ORDER BY a.id desc", Customer.class);
+		q.setParameter("id", id);
 		return q.getResultList();
 	}
 
@@ -97,7 +98,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer addEntry(Customer family) {
 		family.setTotalAmountPending(family.getTotalAmountPending());
-		family.setPerson(getPerson(family.getPerson().getName()));
+		family.setPerson(getPerson(family.getFirstName()));
 		familyDao.save(family);
 		return family;
 	}
