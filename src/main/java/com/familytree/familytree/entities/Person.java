@@ -20,8 +20,7 @@ public class Person {
         this.customer = customer;
     }
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-//    @JoinColumn(name ="transactions",referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Customer> customer =new ArrayList<>();
 
     public Person(Long id, String name) {

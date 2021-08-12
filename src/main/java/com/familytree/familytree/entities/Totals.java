@@ -1,22 +1,16 @@
 package com.familytree.familytree.entities;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Totals {
+
     public Totals() {
         super();
     }
 
-    public int getEndingBalance() {
-        return endingBalance;
-    }
-
-    public void setEndingBalance(int endingBalance) {
-        this.endingBalance = endingBalance;
-    }
-
-    private  int endingBalance;
+    private LocalDate todayDate;
+    private String endingBalance;
+    private String openingBalance;
 
     public LocalDate getTodayDate() {
         return todayDate;
@@ -26,5 +20,21 @@ public class Totals {
         this.todayDate = todayDate;
     }
 
-    private LocalDate todayDate;
+    public String getEndingBalance() {
+        return endingBalance;
+    }
+
+    public void setEndingBalance(String endingBalance) {
+        this.endingBalance = endingBalance;
+    }
+
+    public String getOpeningBalance() {
+        return openingBalance;
+    }
+
+    public void setOpeningBalance(String openingBalance) {
+        this.openingBalance = openingBalance;
+    }
+
+
 }

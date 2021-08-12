@@ -1,15 +1,10 @@
 package com.familytree.familytree.entities;
 
-import java.time.LocalDate;
-
-
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 public class Customer {
-
-
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +13,31 @@ public class Customer {
 	private String firstName;
 	private LocalDate transactionEffectiveDate;
 	private int totalAmountPending;
+
+	public int getOpeningEntryBalance() {
+		return openingEntryBalance;
+	}
+
+	public void setOpeningEntryBalance(int openingEntryBalance) {
+		this.openingEntryBalance = openingEntryBalance;
+	}
+
+	private int openingEntryBalance;
 	private String description;
 	private int creditAmountReceived;
 	private int debitAmountReceived;
-	private String receiptLink;
-	private String paymentLink;
+	private String creditAmount;
+	private String debitAmount;
+
+	public long getAmountPendingEntry() {
+		return amountPendingEntry;
+	}
+
+	public void setAmountPendingEntry(long amountPendingEntry) {
+		this.amountPendingEntry = amountPendingEntry;
+	}
+
+	private long amountPendingEntry;
 
 
 	public Person getPerson() {
@@ -64,7 +79,7 @@ public class Customer {
 	public void setTransactionEffectiveDate(LocalDate transactionEffectiveDate) {
 		this.transactionEffectiveDate = transactionEffectiveDate;
 	}
-
+	
 	public int getCreditAmountReceived() {
 		return creditAmountReceived;
 	}
@@ -72,13 +87,13 @@ public class Customer {
 	public void setCreditAmountReceived(int creditAmountReceived) {
 		this.creditAmountReceived = creditAmountReceived;
 	}
-
+	
 	public int getTotalAmountPending() {
 		return totalAmountPending;
 	}
 
 	public void setTotalAmountPending(int totalAmountPending) {
-		this.totalAmountPending = totalAmountPending - getCreditAmountReceived() + getDebitAmountReceived() ;
+		this.totalAmountPending = totalAmountPending  ;
 	}
 
 	public int getDebitAmountReceived() {
@@ -97,21 +112,7 @@ public class Customer {
 		this.description = description;
 	}
 
-	public String getReceiptLink() {
-		return receiptLink;
-	}
 
-	public void setReceiptink(String receiptLink) {
-		this.receiptLink = receiptLink;
-	}
-
-	public String getPaymentLink() {
-		return paymentLink;
-	}
-
-	public void setPaymentLink(String paymentLink) {
-		this.paymentLink = paymentLink;
-	}
 	private LocalDate fromDate;
 
 	public LocalDate getFromDate() {

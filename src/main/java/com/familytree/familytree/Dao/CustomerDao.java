@@ -1,11 +1,11 @@
 package com.familytree.familytree.Dao;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.familytree.familytree.entities.Customer;
-
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomerDao extends JpaRepository<Customer,Long> {
 
 //	List<Customer> findByFirstNameAndLastName(String firstName, String lastName);
+
+
 }
