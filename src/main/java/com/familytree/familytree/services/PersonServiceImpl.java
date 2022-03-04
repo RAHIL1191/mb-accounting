@@ -6,15 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
 public class PersonServiceImpl implements PersonService{
 
-    @PersistenceContext
-    private EntityManager em;
+//    @PersistenceContext
+//    private EntityManager em;
 
     @Autowired
     private PersonDao personDao;
@@ -55,6 +53,7 @@ public class PersonServiceImpl implements PersonService{
     @Override
     public String updateCustomer(String id,Person person) {
         Person per = personDao.findById(Long.valueOf(id)).orElse(null);
+        assert per != null;
         per.setName(person.getName());
         personDao.save(per);
         return "Customer has been updated successfully";

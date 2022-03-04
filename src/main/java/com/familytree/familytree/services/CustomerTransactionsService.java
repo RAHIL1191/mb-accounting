@@ -1,33 +1,33 @@
 package com.familytree.familytree.services;
 
-import com.familytree.familytree.entities.Customer;
+import com.familytree.familytree.entities.CustomerTransactions;
 import com.familytree.familytree.entities.Totals;
 
 import java.util.List;
 
 public interface CustomerTransactionsService {
 
-	 List<Customer>  getCustomerDetails(String firstName);
+	 List<CustomerTransactions>  getCustomerDetails(String firstName);
 
-	 Customer getPersonRecentEntry(String firstName);
+	CustomerTransactions getPersonRecentEntry(String firstName);
 
-	 Customer addEntry(Customer family);
+	CustomerTransactions addEntry(CustomerTransactions family);
 
-	 List<Customer> findAllCustomersFromTodayDate();
+	 List<CustomerTransactions> findAllCustomersFromTodayDate();
 
 	 Totals findTotalsFromTodayDate();
 
-	 Totals findTotalsFromSelectedDate(Customer family);
+	 Totals findTotalsFromSelectedDate(CustomerTransactions family);
 
-	 List<Customer> getDateWiseDetails(Customer family);
+	 List<CustomerTransactions> getDateWiseDetails(CustomerTransactions family);
 
-	 Totals findTotalsFromDate(Customer family);
+	 Totals findTotalsFromDate(CustomerTransactions family);
 
-	 List<Customer> getDetailsFromDate(Customer family);
+	 List<CustomerTransactions> getDetailsFromDate(CustomerTransactions family);
 
-	 Customer getEntryDetails(String id);
+	CustomerTransactions getEntryDetails(String id);
 
-	Customer updateEntry(Customer family);
+	CustomerTransactions updateEntry(CustomerTransactions family);
 
 	void deleteCustomerTransaction(String id);
 }

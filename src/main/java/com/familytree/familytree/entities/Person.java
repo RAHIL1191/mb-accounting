@@ -12,22 +12,21 @@ public class Person {
     private Long id;
     private String name;
 
-    public List<Customer> getCustomer() {
-        return customer;
+    public List<CustomerTransactions> getCustomerTransactions() {
+        return customerTransactions;
     }
 
-    public void setCustomer(List<Customer> customer) {
-        this.customer = customer;
+    public void setCustomerTransactions(List<CustomerTransactions> customerTransactions) {
+        this.customerTransactions = customerTransactions;
     }
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Customer> customer =new ArrayList<>();
+    private List<CustomerTransactions> customerTransactions =new ArrayList<>();
 
     public Person(Long id, String name) {
         this.id = id;
         this.name = name;
     }
-
 
     public Long getId() {
         return id;
@@ -44,8 +43,6 @@ public class Person {
     public void setName(String name) {
         this.name = name;
     }
-
-
 
     public Person() {
 
